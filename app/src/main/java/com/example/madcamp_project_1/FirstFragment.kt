@@ -14,9 +14,6 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.fragment_first.*
 
-/**
- * A simple [Fragment] subclass.
- */
 class FirstFragment : Fragment() {
     companion object {
         val PERMISSIONS_REQUEST_READ_CONTACTS = 100
@@ -28,7 +25,7 @@ class FirstFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater!!.inflate(R.layout.fragment_first, container, false)
+        return inflater.inflate(R.layout.fragment_first, container, false)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         loadContacts()

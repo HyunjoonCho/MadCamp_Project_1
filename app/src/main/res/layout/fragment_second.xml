@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.madcamp_project_1.SecondFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Second tab"
-        android:textSize="40sp"/>
+    <!--ImageView where image will be set-->
+    <!--Button to pick image-->
 
-</FrameLayout>
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher_foreground"
+        tools:ignore="ContentDescription" />
+
+    <Button
+        android:id="@+id/img_pick_btn"
+        style="@style/Base.Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Choose Image" />
+
+
+</LinearLayout>

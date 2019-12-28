@@ -14,13 +14,27 @@ import java.util.ArrayList;
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
 
     private ArrayList<String> imgList = null;
+    private OnImgClickListener imgClkListener = null;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imgView ;
 
         ViewHolder(View itemView) {
-            super(itemView) ;
-            imgView = itemView.findViewById(R.id.image_view) ;
+            super(itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    if (pos != RecyclerView.NO_POSITION) {
+                        if (imgClkListener != null && imgList != null) {
+
+                            imgClkListener.onImgClick(imgList.get(pos));
+                        }
+                    }
+                }
+            });
+            imgView = itemView.findViewById(R.id.image_view);
         }
     }
 
@@ -39,18 +53,24 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         return vh ;
     }
 
-    // onBindViewHolder() - position에 해당하는 데이터를 뷰홀더의 아이템뷰에 표시.
+
     @Override
     public void onBindViewHolder(GalleryAdapter.ViewHolder holder, int position) {
         String text = imgList.get(position);
         holder.imgView.setImageURI(Uri.parse(text));
     }
 
-    // getItemCount() - 전체 데이터 갯수 리턴.
     @Override
     public int getItemCount() {
         return imgList.size() ;
     }
 
+    public interface OnImgClickListener {
+        void onImgClick(String imgPath);
+    }
+
+    public void setOnImgClickListener(OnImgClickListener listener) {
+        this.imgClkListener = listener;
+    }
 
 }

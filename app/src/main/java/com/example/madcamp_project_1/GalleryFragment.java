@@ -8,9 +8,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 public class GalleryFragment extends Fragment {
 
     private View view;
+    private ImageView bigImg;
 
     @Nullable
     @Override
@@ -35,6 +38,15 @@ public class GalleryFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         this.view = view;
+
+        bigImg = view.findViewById(R.id.bigView);
+
+        bigImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setVisibility(View.GONE);
+            }
+        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
@@ -51,12 +63,20 @@ public class GalleryFragment extends Fragment {
     }
 
     private void setRecyclerView() {
-        ArrayList<String> list = getPathOfAllImages();
+        final ArrayList<String> list = getPathOfAllImages();
 
         RecyclerView rcView = view.findViewById(R.id.recyclerView);
         rcView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
         GalleryAdapter adapter = new GalleryAdapter(list);
+        adapter.setOnImgClickListener(new GalleryAdapter.OnImgClickListener() {
+            @Override
+            public void onImgClick(String imgPath) {
+                Log.w("yo", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                bigImg.setImageURI(Uri.parse(imgPath));
+                bigImg.setVisibility(View.VISIBLE);
+            }
+        });
         rcView.setAdapter(adapter);
     }
 

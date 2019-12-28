@@ -11,7 +11,7 @@ class MyPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
             0 -> {
                 FirstFragment()
             }
-            1 -> SecondFragment()
+            1 -> GalleryFragment()
             else -> {
                 return ThirdFragment()
             }

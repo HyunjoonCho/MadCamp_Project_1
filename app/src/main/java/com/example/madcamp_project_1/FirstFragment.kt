@@ -11,8 +11,9 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.provider.ContactsContract
 import android.util.Log
+import android.widget.ArrayAdapter
+import android.widget.ListView
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.fragment_first.*
 
 class FirstFragment : Fragment() {
     companion object {
@@ -28,10 +29,17 @@ class FirstFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_first, container, false)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        loadContacts()
+        val array = loadContacts()
+        val listview = view.findViewById(R.id.listContacts) as ListView
+        val adpater= ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, array)
+        listview.adapter = adpater
     }
-    private fun loadContacts() {
-        var builder: StringBuilder
+
+    override fun postponeEnterTransition() {
+        super.postponeEnterTransition()
+    }
+    private fun loadContacts(): Array<String> {
+        var builder: MutableList<String>
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(
                 requireContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
@@ -40,8 +48,9 @@ class FirstFragment : Fragment() {
             //callback onRequestPermissionsResult
         } else {
             builder = getContacts()
-            listContacts.text = builder.toString()
+            return builder.toTypedArray()
         }
+        return emptyArray()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
@@ -55,8 +64,8 @@ class FirstFragment : Fragment() {
         }
     }
 
-    private fun getContacts(): StringBuilder {
-        val builder = StringBuilder()
+    private fun getContacts(): MutableList<String> {
+        val builder = mutableListOf<String>()
         val resolver: ContentResolver = context!!.contentResolver
         val cursor = resolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null,
             null)
@@ -73,12 +82,11 @@ class FirstFragment : Fragment() {
                         ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                         null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=?", arrayOf(id), null)
 
-                    if(cursorPhone != null && cursorPhone.count > 0) {
+                    if(cursorPhone != null && cursorPhone.count >= 0) {
                         while (cursorPhone.moveToNext()) {
                             val phoneNumValue = cursorPhone.getString(
                                 cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-                            builder.append("Contact: ").append(name).append(", Phone Number: ").append(
-                                phoneNumValue).append("\n\n")
+                            builder.add(name.plus("\n").plus(phoneNumValue))
                             Log.e("Name ===>",phoneNumValue);
                         }
                     }

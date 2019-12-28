@@ -97,7 +97,7 @@ class FirstFragment : Fragment() {
             //   toast("No contacts available!")
         }
         cursor?.close()
-
+        builder.sort()
         return builder
     }
 

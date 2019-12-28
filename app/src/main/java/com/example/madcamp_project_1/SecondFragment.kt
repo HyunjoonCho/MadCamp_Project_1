@@ -17,6 +17,8 @@ import androidx.core.content.ContextCompat
 
 class SecondFragment : Fragment() {
 
+    var oncePicked: Boolean = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -52,7 +54,7 @@ class SecondFragment : Fragment() {
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         //super.setUserVisibleHint(isVisibleToUser)
-        if (isVisibleToUser) pickImageFromGallery()
+        if (isVisibleToUser && !oncePicked) pickImageFromGallery()
     }
 
     private fun pickImageFromGallery() {
@@ -90,6 +92,7 @@ class SecondFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE){
             image_view.setImageURI(data?.data)
+            oncePicked = true
         }
     }
 

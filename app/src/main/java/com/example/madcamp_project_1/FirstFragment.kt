@@ -13,6 +13,7 @@ import android.provider.ContactsContract
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 
 class FirstFragment : Fragment() {
@@ -29,37 +30,34 @@ class FirstFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_first, container, false)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val array = loadContacts()
-        val listview = view.findViewById(R.id.listContacts) as ListView
-        val adpater= ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, array)
-        listview.adapter = adpater
-    }
-
-    override fun postponeEnterTransition() {
-        super.postponeEnterTransition()
-    }
-    private fun loadContacts(): Array<String> {
-        var builder: MutableList<String>
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(
-                requireContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS),
-                PERMISSIONS_REQUEST_READ_CONTACTS)
-            //callback onRequestPermissionsResult
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if(ContextCompat.checkSelfPermission(
+                    requireContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
+                loadContacts()
+            }
+            else {
+                requestPermissions(arrayOf(Manifest.permission.READ_CONTACTS),PERMISSIONS_REQUEST_READ_CONTACTS)
+                //callback onRequestPermissionsResult
+            }
         } else {
-            builder = getContacts()
-            return builder.toTypedArray()
+            loadContacts()
         }
-        return emptyArray()
+    }
+
+    private fun loadContacts(){
+        val array = getContacts().toTypedArray()
+        val l_view = view?.findViewById(R.id.listContacts) as ListView
+        val adpat= ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, array)
+        l_view.adapter = adpat
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
                                             grantResults: IntArray) {
         if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 loadContacts()
             } else {
-                //  toast("Permission must be granted in order to display contacts information")
+                Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -98,6 +96,7 @@ class FirstFragment : Fragment() {
         }
         cursor?.close()
         builder.sort()
+
         return builder
     }
 

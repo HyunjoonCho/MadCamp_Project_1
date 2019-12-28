@@ -10,20 +10,20 @@
     <!--ImageView where image will be set-->
     <!--Button to pick image-->
 
-    <ImageView
-        android:id="@+id/image_view"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher_foreground"
-        tools:ignore="ContentDescription" />
-
     <Button
         android:id="@+id/img_pick_btn"
         style="@style/Base.Widget.AppCompat.Button.Colored"
-        android:layout_width="match_parent"
+        android:layout_width="74dp"
         android:layout_height="wrap_content"
-        android:text="Choose Image" />
+        android:text="Back" />
+
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="match_parent"
+        android:layout_height="405dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher_foreground"
+        tools:ignore="ContentDescription" />
 
 
 </LinearLayout>

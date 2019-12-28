@@ -50,6 +50,11 @@ class SecondFragment : Fragment() {
         }
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        //super.setUserVisibleHint(isVisibleToUser)
+        if (isVisibleToUser) pickImageFromGallery()
+    }
+
     private fun pickImageFromGallery() {
         //Intent to pick image
         val intent = Intent(Intent.ACTION_PICK)

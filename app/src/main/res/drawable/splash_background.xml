@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@android:color/holo_blue_bright" />
+    <item android:drawable="@android:color/white" />
 
     <item
-        android:drawable="@mipmap/ic_launcher_round"
+        android:width="78dp"
+        android:height="78dp"
+        android:drawable="@mipmap/gallery"
         android:gravity="center" />
-
+    <item
+        android:right="115dp"
+        android:top="2dp"
+        android:width="65dp"
+        android:height="58dp"
+        android:drawable="@mipmap/contacts"
+        android:gravity="center" />
 
 </layer-list>

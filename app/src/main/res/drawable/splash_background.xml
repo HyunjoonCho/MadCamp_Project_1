@@ -7,4 +7,5 @@
         android:drawable="@mipmap/ic_launcher_round"
         android:gravity="center" />
 
+
 </layer-list>

@@ -1,7 +1,6 @@
 package com.example.madcamp_project_1;
 
 import android.content.Context;
-import android.media.Image;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;

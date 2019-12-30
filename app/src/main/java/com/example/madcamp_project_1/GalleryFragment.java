@@ -88,17 +88,19 @@ public class GalleryFragment extends Fragment implements MainActivity.onBackPres
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
                 setRecyclerView();
             }
             else {
-                requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, 1001);
+                requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.READ_CONTACTS}, 1001);
             }
         }
         else {
             setRecyclerView();
         }
     }
+
 
     private void setRecyclerView() {
         final ArrayList<ImageData> list = getPathOfAllImages();
@@ -157,6 +159,7 @@ public class GalleryFragment extends Fragment implements MainActivity.onBackPres
             }
             else {
                 Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_LONG).show();
+                ((MainActivity)requireContext()).finish();
             }
         }
     }

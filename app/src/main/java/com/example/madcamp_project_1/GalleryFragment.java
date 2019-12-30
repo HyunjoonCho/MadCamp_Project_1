@@ -1,6 +1,7 @@
 package com.example.madcamp_project_1;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -28,7 +29,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class GalleryFragment extends Fragment {
+public class GalleryFragment extends Fragment implements MainActivity.onBackPressedListener {
+
+    private GalleryFragment p2me = this;
 
     private View view;
     private RelativeLayout bigView;
@@ -68,10 +71,7 @@ public class GalleryFragment extends Fragment {
         infoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (infoText.getVisibility() == View.VISIBLE)
-                    infoText.setVisibility(View.GONE);
-                else
-                    infoText.setVisibility(View.VISIBLE);
+                infoText.setVisibility(View.VISIBLE);
             }
         });
 
@@ -79,8 +79,10 @@ public class GalleryFragment extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bigView.setVisibility(View.GONE);
                 infoText.setVisibility(View.GONE);
+                bigView.setVisibility(View.GONE);
+
+                ((MainActivity)requireContext()).setOnBackPressedListener(null);
             }
         });
 
@@ -93,7 +95,6 @@ public class GalleryFragment extends Fragment {
             }
         }
         else {
-
             setRecyclerView();
         }
     }
@@ -102,6 +103,7 @@ public class GalleryFragment extends Fragment {
         final ArrayList<ImageData> list = getPathOfAllImages();
 
         RecyclerView rcView = view.findViewById(R.id.recyclerView);
+        rcView.setItemViewCacheSize(20);
         rcView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
         GalleryAdapter adapter = new GalleryAdapter(list);
@@ -116,6 +118,7 @@ public class GalleryFragment extends Fragment {
                         .concat("\n\nImage Size: ")
                         .concat(image.imgSize));
                 bigView.setVisibility(View.VISIBLE);
+                ((MainActivity)requireContext()).setOnBackPressedListener(p2me);
             }
         });
         rcView.setAdapter(adapter);
@@ -154,6 +157,17 @@ public class GalleryFragment extends Fragment {
             else {
                 Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    @Override
+    public void onBack() {
+        if (infoText.getVisibility() == View.VISIBLE) {
+            infoText.setVisibility(View.GONE);
+        }
+        else if (bigView.getVisibility() == View.VISIBLE) {
+            bigView.setVisibility(View.GONE);
+            ((MainActivity)requireContext()).setOnBackPressedListener(null);
         }
     }
 }

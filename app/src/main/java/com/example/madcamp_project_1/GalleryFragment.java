@@ -2,6 +2,7 @@ package com.example.madcamp_project_1;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -38,6 +39,7 @@ public class GalleryFragment extends Fragment implements MainActivity.onBackPres
     private ImageView bigImg;
     private Button backButton;
     private Button infoButton;
+    private Button shareButton;
     private TextView infoText;
     private LinearLayout buttonLayout;
 
@@ -56,6 +58,7 @@ public class GalleryFragment extends Fragment implements MainActivity.onBackPres
         buttonLayout = view.findViewById(R.id.ButtonLayout);
         backButton = view.findViewById(R.id.Back);
         infoButton = view.findViewById(R.id.Info);
+        shareButton = view.findViewById(R.id.Share);
         infoText = view.findViewById(R.id.Infotext);
 
         bigImg.setOnClickListener(new View.OnClickListener() {
@@ -87,6 +90,16 @@ public class GalleryFragment extends Fragment implements MainActivity.onBackPres
             }
         });
 
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_STREAM, Uri.parse(bigImg.getContentDescription().toString()));
+                startActivity(Intent.createChooser(intent, "Share image"));
+            }
+        });
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
@@ -114,6 +127,7 @@ public class GalleryFragment extends Fragment implements MainActivity.onBackPres
             @Override
             public void onImgClick(ImageData image) {
                 bigImg.setImageURI(Uri.parse(image.imgPath));
+                bigImg.setContentDescription(image.imgPath);
                 infoText.setText(new String().concat("Image Name: ")
                         .concat(image.imgName)
                         .concat("\n\nImage Path: ")

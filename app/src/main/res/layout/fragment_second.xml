@@ -30,6 +30,7 @@
             android:layout_height="match_parent"
             android:layout_marginBottom="?attr/actionBarSize"
             android:background="#FFFFFF"
+            android:contentDescription=""
             android:src="@drawable/ic_launcher_foreground" />
 
         <LinearLayout
@@ -51,6 +52,15 @@
 
             <Button
                 android:id="@+id/Info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Info"
+                android:textColor="#FFFFFF"
+                android:layout_weight="1"
+                android:background="#59000000"/>
+
+            <Button
+                android:id="@+id/Share"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Info"

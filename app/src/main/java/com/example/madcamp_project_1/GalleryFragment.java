@@ -81,6 +81,7 @@ public class GalleryFragment extends Fragment implements MainActivity.onBackPres
             public void onClick(View v) {
                 infoText.setVisibility(View.GONE);
                 bigView.setVisibility(View.GONE);
+                buttonLayout.setVisibility(View.GONE);
 
                 ((MainActivity)requireContext()).setOnBackPressedListener(null);
             }
@@ -167,6 +168,7 @@ public class GalleryFragment extends Fragment implements MainActivity.onBackPres
         }
         else if (bigView.getVisibility() == View.VISIBLE) {
             bigView.setVisibility(View.GONE);
+            buttonLayout.setVisibility(View.GONE);
             ((MainActivity)requireContext()).setOnBackPressedListener(null);
         }
     }

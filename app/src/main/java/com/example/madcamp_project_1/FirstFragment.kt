@@ -12,6 +12,9 @@ import android.content.ContentResolver
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
+import android.graphics.drawable.shapes.RoundRectShape
 import android.net.Uri
 import android.os.Build
 import android.provider.ContactsContract
@@ -23,7 +26,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class ListViewItem : Comparable<ListViewItem> {
-    lateinit var picture: Drawable
+    lateinit var picture: String
     lateinit var name: String
     lateinit var phone_number: String
 
@@ -60,7 +63,14 @@ class ListViewAdapter : BaseAdapter() {
         val listViewItem = listViewItemList[position]
 
         // 아이템 내 각 위젯에 데이터 반영
-        iconImageView.setImageDrawable(listViewItem.picture)
+        lateinit var uri: Uri
+        if(listViewItem.picture == "-1") {
+            uri = Uri.parse("android.resource://com.example.madcamp_project_1/mipmap/profile")
+        }else{
+            uri = Uri.parse(listViewItem.picture)
+        }
+
+        iconImageView.setImageURI(uri)
         titleTextView.setText(listViewItem.name)
 
         return view
@@ -81,7 +91,7 @@ class ListViewAdapter : BaseAdapter() {
     }
 
     // 아이템 데이터 추가를 위한 함수. 개발자가 원하는대로 작성 가능.
-    fun addItem(picture: Drawable, name: String, phone_number: String) {
+    fun addItem(picture: String, name: String, phone_number: String) {
         val item = ListViewItem()
 
         item.picture = picture
@@ -171,6 +181,7 @@ class FirstFragment : Fragment() {
         if (cursor!=null && cursor.count > 0) {
             while (cursor.moveToNext()) {
                 val id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID))
+                var photo_uri = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI))
                 val name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME))
                 val phoneNumber = (cursor.getString(
                     cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))).toInt()
@@ -184,8 +195,9 @@ class FirstFragment : Fragment() {
                         while (cursorPhone.moveToNext()) {
                             val phoneNumValue = cursorPhone.getString(
                                 cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-                            Log.e("Name ===>",phoneNumValue);
-                            adapter.addItem(ContextCompat.getDrawable(requireContext(), R.drawable.profile_user)!!, name, phoneNumValue)
+                            if(photo_uri==null){ photo_uri="-1" }
+                            adapter.addItem(photo_uri, name, phoneNumValue)
+
                         }
                     }
                     cursorPhone?.close()

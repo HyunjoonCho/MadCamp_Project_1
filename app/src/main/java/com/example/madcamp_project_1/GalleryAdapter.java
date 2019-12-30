@@ -1,6 +1,7 @@
 package com.example.madcamp_project_1;
 
 import android.content.Context;
+import android.media.Image;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
 
-    private ArrayList<String> imgList = null;
+    private ArrayList<ImageData> imgList = null;
     private OnImgClickListener imgClkListener = null;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -38,7 +39,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         }
     }
 
-    GalleryAdapter (ArrayList<String> list) {
+    GalleryAdapter (ArrayList<ImageData> list) {
         imgList = list ;
     }
 
@@ -56,8 +57,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(GalleryAdapter.ViewHolder holder, int position) {
-        String text = imgList.get(position);
-        holder.imgView.setImageURI(Uri.parse(text));
+        ImageData data = imgList.get(position);
+        holder.imgView.setImageURI(Uri.parse(data.imgPath));
     }
 
     @Override
@@ -66,7 +67,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     public interface OnImgClickListener {
-        void onImgClick(String imgPath);
+        void onImgClick(ImageData image);
     }
 
     public void setOnImgClickListener(OnImgClickListener listener) {

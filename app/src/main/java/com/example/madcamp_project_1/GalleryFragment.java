@@ -12,7 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,7 +31,12 @@ import java.util.ArrayList;
 public class GalleryFragment extends Fragment {
 
     private View view;
+    private RelativeLayout bigView;
     private ImageView bigImg;
+    private Button backButton;
+    private Button infoButton;
+    private TextView infoText;
+    private LinearLayout buttonLayout;
 
     @Nullable
     @Override
@@ -39,12 +48,39 @@ public class GalleryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         this.view = view;
 
-        bigImg = view.findViewById(R.id.bigView);
+        bigView = view.findViewById(R.id.bigView);
+        bigImg = view.findViewById(R.id.imgView);
+        buttonLayout = view.findViewById(R.id.ButtonLayout);
+        backButton = view.findViewById(R.id.Back);
+        infoButton = view.findViewById(R.id.Info);
+        infoText = view.findViewById(R.id.Infotext);
 
         bigImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                v.setVisibility(View.GONE);
+                if (buttonLayout.getVisibility() == View.VISIBLE)
+                    buttonLayout.setVisibility(View.GONE);
+                else
+                    buttonLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        infoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (infoText.getVisibility() == View.VISIBLE)
+                    infoText.setVisibility(View.GONE);
+                else
+                    infoText.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bigView.setVisibility(View.GONE);
+                infoText.setVisibility(View.GONE);
             }
         });
 
@@ -63,7 +99,7 @@ public class GalleryFragment extends Fragment {
     }
 
     private void setRecyclerView() {
-        final ArrayList<String> list = getPathOfAllImages();
+        final ArrayList<ImageData> list = getPathOfAllImages();
 
         RecyclerView rcView = view.findViewById(R.id.recyclerView);
         rcView.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -71,18 +107,23 @@ public class GalleryFragment extends Fragment {
         GalleryAdapter adapter = new GalleryAdapter(list);
         adapter.setOnImgClickListener(new GalleryAdapter.OnImgClickListener() {
             @Override
-            public void onImgClick(String imgPath) {
-                Log.w("yo", "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                bigImg.setImageURI(Uri.parse(imgPath));
-                bigImg.setVisibility(View.VISIBLE);
+            public void onImgClick(ImageData image) {
+                bigImg.setImageURI(Uri.parse(image.imgPath));
+                infoText.setText(new String().concat("Image Name: ")
+                        .concat(image.imgName)
+                        .concat("\n\nImage Path: ")
+                        .concat(image.imgPath)
+                        .concat("\n\nImage Size: ")
+                        .concat(image.imgSize));
+                bigView.setVisibility(View.VISIBLE);
             }
         });
         rcView.setAdapter(adapter);
     }
 
-    private ArrayList<String> getPathOfAllImages() {
+    private ArrayList<ImageData> getPathOfAllImages() {
 
-        ArrayList<String> result = new ArrayList<>();
+        ArrayList<ImageData> result = new ArrayList<>();
         Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {
                 MediaStore.Images.Media._ID,
@@ -94,8 +135,10 @@ public class GalleryFragment extends Fragment {
 
         while (imgCursor.moveToNext()) {
             String absPath = imgCursor.getString(1);
+            String imgName = imgCursor.getString(2);
+            String imgSize = imgCursor.getString(3);
             if (!TextUtils.isEmpty(absPath)) {
-                result.add(absPath);
+                result.add(new ImageData(absPath, imgName, imgSize));
             }
         }
 

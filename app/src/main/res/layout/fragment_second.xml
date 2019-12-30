@@ -16,13 +16,63 @@
         android:layout_marginBottom="?attr/actionBarSize"
         android:layout_height="match_parent"/>
 
-    <ImageView
+
+    <RelativeLayout
         android:id="@+id/bigView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="?attr/actionBarSize"
-        android:src="@drawable/ic_launcher_foreground"
-        android:visibility="gone"
-        android:background="#FFFFFF"/>
+        android:visibility="gone">
+
+
+        <ImageView
+            android:id="@+id/imgView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="?attr/actionBarSize"
+            android:background="#FFFFFF"
+            android:src="@drawable/ic_launcher_foreground" />
+
+        <LinearLayout
+            android:id="@+id/ButtonLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="visible"
+            style="?android:attr/buttonBarStyle">
+
+            <Button
+                android:id="@+id/Back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Back"
+                android:layout_weight="1"
+                android:textColor="#FFFFFF"
+                android:background="#59000000"/>
+
+            <Button
+                android:id="@+id/Info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Info"
+                android:textColor="#FFFFFF"
+                android:layout_weight="1"
+                android:background="#59000000"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/Infotext"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#70000000"
+            android:textColor="#FFFFFF"
+            android:visibility="gone"
+            android:text="No Information"
+            />
+
+
+    </RelativeLayout>
+
+
 
 </RelativeLayout>

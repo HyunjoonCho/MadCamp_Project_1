@@ -49,10 +49,10 @@ class FirstFragment : Fragment() {
         val l_view = view?.findViewById(R.id.listContacts) as ListView
         val adpat= ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, array)
         l_view.adapter = adpat
+
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
-                                            grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 loadContacts()

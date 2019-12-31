@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.example.madcamp_project_1.R
-import kotlinx.android.synthetic.main.example_3_fragment.*
+import kotlinx.android.synthetic.main.fragment_calendar.*
 
 interface HasToolbar {
     val toolbar: Toolbar? // Return null to hide the toolbar

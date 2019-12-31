@@ -139,7 +139,7 @@ class ListViewAdapter : BaseAdapter(), Filterable {
 
 }
 
-class FirstFragment : Fragment() {
+class ContactsFragment : Fragment() {
     companion object {
         val PERMISSIONS_REQUEST_READ_CONTACTS = 100
     }
@@ -150,7 +150,7 @@ class FirstFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_first, container, false)
+        return inflater.inflate(R.layout.fragment_contacts, container, false)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){

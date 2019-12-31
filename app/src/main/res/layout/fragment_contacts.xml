@@ -7,12 +7,14 @@
     android:layout_height="match_parent"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context="com.example.madcamp_project_1.FirstFragment">
+    tools:context="com.example.madcamp_project_1.ContactsFragment">
 
     <EditText
         android:id="@+id/editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/calendar_toolbar_color"
+        android:textSize="15dp"
         android:imeOptions="actionSearch"
         android:singleLine="true"
         android:layout_marginLeft="20dp"

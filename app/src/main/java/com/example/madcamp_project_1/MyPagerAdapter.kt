@@ -9,11 +9,11 @@ class MyPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> {
-                FirstFragment()
+                ContactsFragment()
             }
             1 -> GalleryFragment()
             else -> {
-                return ThirdFragment()
+                return CalendarFragment()
             }
         }
     }

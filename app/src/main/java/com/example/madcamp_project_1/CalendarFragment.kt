@@ -12,14 +12,12 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.jakewharton.threetenabp.AndroidThreeTen
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.model.DayOwner
@@ -30,9 +28,8 @@ import com.kizitonwose.calendarviewsample.*
 import com.kizitonwose.calendarviewsample.inflate
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.calendar_day_legend.view.*
-import kotlinx.android.synthetic.main.example_3_calendar_day.view.*
-import kotlinx.android.synthetic.main.example_3_event_item_view.*
-import kotlinx.android.synthetic.main.example_3_fragment.*
+import kotlinx.android.synthetic.main.calendar_day.view.*
+import kotlinx.android.synthetic.main.fragment_calendar.*
 import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
 import org.threeten.bp.format.DateTimeFormatter
@@ -49,7 +46,7 @@ class Example3EventsAdapter(val onClick: (Event) -> Unit) :
     val events = mutableListOf<Event>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Example3EventsViewHolder {
-        return Example3EventsViewHolder(parent.inflate(R.layout.example_3_event_item_view))
+        return Example3EventsViewHolder(parent.inflate(R.layout.event_item_view))
     }
 
     override fun onBindViewHolder(viewHolder: Example3EventsViewHolder, position: Int) {
@@ -75,7 +72,7 @@ class Example3EventsAdapter(val onClick: (Event) -> Unit) :
 
 }
 
-class ThirdFragment : BaseFragment(), HasBackButton {
+class CalendarFragment : BaseFragment(), HasBackButton {
 
     private val eventsAdapter = Example3EventsAdapter {
         AlertDialog.Builder(requireContext())
@@ -130,7 +127,7 @@ class ThirdFragment : BaseFragment(), HasBackButton {
     private val events = mutableMapOf<LocalDate, List<Event>>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.example_3_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_calendar, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -178,17 +175,17 @@ class ThirdFragment : BaseFragment(), HasBackButton {
                     textView.makeVisible()
                     when (day.date) {
                         today -> {
-                            textView.setTextColorRes(R.color.example_3_white)
-                            textView.setBackgroundResource(R.drawable.example_3_today_bg)
+                            textView.setTextColorRes(R.color.calendar_white)
+                            textView.setBackgroundResource(R.drawable.calendar_today_bg)
                             dotView.makeInVisible()
                         }
                         selectedDate -> {
-                            textView.setTextColorRes(R.color.example_3_blue)
-                            textView.setBackgroundResource(R.drawable.example_3_selected_bg)
+                            textView.setTextColorRes(R.color.calendar_blue)
+                            textView.setBackgroundResource(R.drawable.calendar_selected_bg)
                             dotView.makeInVisible()
                         }
                         else -> {
-                            textView.setTextColorRes(R.color.example_3_black)
+                            textView.setTextColorRes(R.color.calendar_black)
                             textView.background = null
                             dotView.isVisible = events[day.date].orEmpty().isNotEmpty()
                         }
@@ -223,7 +220,7 @@ class ThirdFragment : BaseFragment(), HasBackButton {
                     container.legendLayout.tag = month.yearMonth
                     container.legendLayout.children.map { it as TextView }.forEachIndexed { index, tv ->
                         tv.text = daysOfWeek[index].name.first().toString()
-                        tv.setTextColorRes(R.color.example_3_black)
+                        tv.setTextColorRes(R.color.calendar_black)
                     }
                 }
             }

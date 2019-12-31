@@ -1,7 +1,9 @@
 package com.example.madcamp_project_1
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +20,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.model.DayOwner
@@ -30,6 +33,7 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.calendar_day_legend.view.*
 import kotlinx.android.synthetic.main.calendar_day.view.*
 import kotlinx.android.synthetic.main.fragment_calendar.*
+import org.json.JSONObject
 import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
 import org.threeten.bp.format.DateTimeFormatter
@@ -120,6 +124,8 @@ class CalendarFragment : BaseFragment(), HasBackButton {
 
     private var selectedDate: LocalDate? = null
     private val today = LocalDate.now()
+    private lateinit var pref : SharedPreferences
+    private lateinit var editor : SharedPreferences.Editor
 
     private val titleSameYearFormatter = DateTimeFormatter.ofPattern("MMM")
     private val titleFormatter = DateTimeFormatter.ofPattern("yyyy년 MMM")
@@ -129,6 +135,33 @@ class CalendarFragment : BaseFragment(), HasBackButton {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_calendar, container, false)
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        pref = requireContext().getSharedPreferences("todo", Context.MODE_PRIVATE)
+        editor = pref.edit()
+        val json: String? = pref.getString("events", "")
+        if (!json!!.contentEquals("")) {
+            Log.i("json", json)
+            val resobj = JSONObject(json)
+            var keys = resobj.keys()
+
+            while (keys.hasNext()) {
+                var key = keys.next()
+                val d = LocalDate.parse(key)
+                var arr = resobj.getJSONArray(key)
+
+                for (i in 0..arr.length()-1) {
+                    var elm = arr.getJSONObject(i)
+                    events[d] = events[d].orEmpty().plus(Event(UUID.randomUUID().toString(), elm.getString("text"), d))
+                }
+            }
+
+            // Log.i("events", Gson().toJson(events))
+        }
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -247,6 +280,8 @@ class CalendarFragment : BaseFragment(), HasBackButton {
         } else {
             selectedDate?.let {
                 events[it] = events[it].orEmpty().plus(Event(UUID.randomUUID().toString(), text, it))
+                editor.putString("events", Gson().toJson(events))
+                editor.commit()
                 updateAdapterForDate(it)
             }
         }

@@ -2,15 +2,14 @@ package com.example.madcamp_project_1
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import android.Manifest
 import android.app.AlertDialog
 import android.content.ContentResolver
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
@@ -19,7 +18,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.ContactsContract
 import android.util.Log
-import android.view.ContextThemeWrapper
+import android.view.*
 import android.widget.*
 import androidx.core.content.ContextCompat
 import java.util.*
@@ -163,8 +162,12 @@ class FirstFragment : Fragment() {
                 startActivity(smsIntent)
             }
 
-            builder.setView(dialogView).show()
+            builder.setView(dialogView)
+            val dialog = builder.create()
+            dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
 
+            dialog.show()
          }
     }
 

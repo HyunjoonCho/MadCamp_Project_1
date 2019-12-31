@@ -27,7 +27,7 @@ class MyPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
             0 -> "Contacts"
             1 -> "Gallery"
             else -> {
-                return "Others"
+                return "Calendar"
             }
         }
     }

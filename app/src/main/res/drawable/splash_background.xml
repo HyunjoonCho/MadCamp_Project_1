@@ -15,5 +15,13 @@
         android:height="58dp"
         android:drawable="@mipmap/contacts"
         android:gravity="center" />
+    <item
+        android:left="113.2dp"
+        android:bottom="3.2dp"
+        android:width="52dp"
+        android:height="56.7dp"
+        android:drawable="@mipmap/calendar"
+        android:gravity="center" />
+
 
 </layer-list>

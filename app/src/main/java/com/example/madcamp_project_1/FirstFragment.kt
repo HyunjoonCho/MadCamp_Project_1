@@ -63,14 +63,10 @@ class ListViewAdapter : BaseAdapter() {
         val listViewItem = listViewItemList[position]
 
         // 아이템 내 각 위젯에 데이터 반영
-        lateinit var uri: Uri
-        if(listViewItem.picture == "-1") {
-            uri = Uri.parse("android.resource://com.example.madcamp_project_1/mipmap/profile")
-        }else{
-            uri = Uri.parse(listViewItem.picture)
+        if(listViewItem.picture != "-1") {
+            val uri = Uri.parse(listViewItem.picture)
+            iconImageView.setImageURI(uri)
         }
-
-        iconImageView.setImageURI(uri)
         titleTextView.setText(listViewItem.name)
 
         return view
@@ -140,25 +136,34 @@ class FirstFragment : Fragment() {
             val item = parent.getItemAtPosition(position) as ListViewItem
 
             //val profile = item.picture
+            val uri = item.picture
             val name = item.name
             val phone_number = item.phone_number
 
             val builder = AlertDialog.Builder(requireContext())
+            val dialogView = layoutInflater.inflate(R.layout.contact_dialog, null)
 
-            builder.setTitle(name)
-            builder.setMessage(phone_number)
-            builder.setNeutralButton("Dial"){_, _ ->
+            val dialogPic = dialogView.findViewById<ImageView>(R.id.profile_pic)
+            val dialogName = dialogView.findViewById<TextView>(R.id.name)
+            val dialogNum = dialogView.findViewById<TextView>(R.id.phone_number)
+            val call = dialogView.findViewById<ImageButton>(R.id.dial)
+            val text = dialogView.findViewById<ImageButton>(R.id.sms)
+
+            if(uri != "-1") { dialogPic.setImageURI(Uri.parse(uri))  }
+            dialogName.setText(name)
+            dialogNum.setText(phone_number)
+
+            call.setOnClickListener {
                 val dialIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Uri.encode(phone_number)))
                 startActivity(dialIntent)
             }
-            builder.setPositiveButton("Text"){_, _ ->
+
+            text.setOnClickListener{
                 val smsIntent = Intent(Intent.ACTION_SENDTO, Uri.parse("sms:" + Uri.encode(phone_number)))
                 startActivity(smsIntent)
             }
 
-            val alertDialog = builder.create()
-
-            alertDialog.show()
+            builder.setView(dialogView).show()
 
          }
     }

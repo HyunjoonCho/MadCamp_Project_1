@@ -10,13 +10,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.OvalShape
-import android.graphics.drawable.shapes.RoundRectShape
 import android.net.Uri
 import android.os.Build
 import android.provider.ContactsContract
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.*
 import android.widget.*
@@ -34,13 +32,15 @@ class ListViewItem : Comparable<ListViewItem> {
     }
 }
 
-class ListViewAdapter : BaseAdapter() {
+class ListViewAdapter : BaseAdapter(), Filterable {
     // Adapter에 추가된 데이터를 저장하기 위한 ArrayList
     private var listViewItemList = ArrayList<ListViewItem>()
+    private var filteredItemList = listViewItemList
+
 
     // Adapter에 사용되는 데이터의 개수를 리턴. : 필수 구현
     override fun getCount(): Int {
-        return listViewItemList.size
+        return filteredItemList.size
     }
 
     // position에 위치한 데이터를 화면에 출력하는데 사용될 View를 리턴. : 필수 구현
@@ -58,13 +58,15 @@ class ListViewAdapter : BaseAdapter() {
         val iconImageView = view!!.findViewById(R.id.pictureView) as ImageView
         val titleTextView = view.findViewById(R.id.nameView) as TextView
 
-        // Data Set(listViewItemList)에서 position에 위치한 데이터 참조 획득
-        val listViewItem = listViewItemList[position]
+        // Data Set(filteredItemList)에서 position에 위치한 데이터 참조 획득
+        val listViewItem = filteredItemList[position]
 
         // 아이템 내 각 위젯에 데이터 반영
         if(listViewItem.picture != "-1") {
             val uri = Uri.parse(listViewItem.picture)
             iconImageView.setImageURI(uri)
+        } else {
+            iconImageView.setImageResource(R.mipmap.profile)
         }
         titleTextView.setText(listViewItem.name)
 
@@ -77,12 +79,12 @@ class ListViewAdapter : BaseAdapter() {
     }
 
     fun sortByName(){
-        Collections.sort(listViewItemList)
+        Collections.sort(filteredItemList)
     }
 
     // 지정한 위치(position)에 있는 데이터 리턴 : 필수 구현
     override fun getItem(position: Int): Any {
-        return listViewItemList[position]
+        return filteredItemList[position]
     }
 
     // 아이템 데이터 추가를 위한 함수. 개발자가 원하는대로 작성 가능.
@@ -95,6 +97,43 @@ class ListViewAdapter : BaseAdapter() {
 
         listViewItemList.add(item)
     }
+
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val results = FilterResults()
+
+                if(constraint == null || constraint.length == 0){
+                    results.values = listViewItemList
+                    results.count = listViewItemList.size
+                } else {
+                    var itemList = ArrayList<ListViewItem>()
+
+                    for(item in listViewItemList){
+                        if(item.name.toLowerCase().contains(constraint.toString().toLowerCase())){
+                            itemList.add(item)
+                        }
+                    }
+
+                    results.values = itemList
+                    results.count = itemList.size
+                }
+                return results
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                filteredItemList = results?.values as ArrayList<ListViewItem>
+
+                if(results?.count!! > 0) {
+                    notifyDataSetChanged()
+                } else{
+                    notifyDataSetInvalidated()
+                }
+            }
+        }
+    }
+
 }
 
 class FirstFragment : Fragment() {
@@ -169,6 +208,18 @@ class FirstFragment : Fragment() {
 
             dialog.show()
          }
+        val editTextFilter = view?.findViewById(R.id.editText) as EditText
+
+        editTextFilter.addTextChangedListener(object: TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+                val filterText = s.toString()
+                (l_view.adapter as ListViewAdapter).filter.filter(filterText)
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+        })
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

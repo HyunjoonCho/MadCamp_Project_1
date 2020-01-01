@@ -9,21 +9,35 @@
     android:focusableInTouchMode="true"
     tools:context="com.example.madcamp_project_1.ContactsFragment">
 
-    <EditText
-        android:id="@+id/editText"
+    <FrameLayout
+        android:id="@+id/profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/calendar_toolbar_color"
-        android:textSize="15dp"
-        android:imeOptions="actionSearch"
-        android:singleLine="true"
+        android:layout_marginTop="5dp"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp" />
+        android:layout_marginRight="20dp">
+        <EditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15dp"
+            android:imeOptions="actionSearch"
+            android:singleLine="true" />
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="right"
+            android:tint="@color/calendar_light_pink"
+            app:srcCompat="@mipmap/search"/>
+    </FrameLayout>
     <ListView
-        android:layout_below="@id/editText"
+        android:layout_below="@id/profile"
         android:id="@+id/listContacts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:divider="@color/calendar_toolbar_color_dark"
+        android:dividerHeight="0.5dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginBottom="?attr/actionBarSize"

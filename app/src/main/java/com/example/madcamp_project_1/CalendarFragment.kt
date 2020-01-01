@@ -80,37 +80,37 @@ class CalendarFragment : BaseFragment(), HasBackButton {
 
     private val eventsAdapter = Example3EventsAdapter {
         AlertDialog.Builder(requireContext())
-            .setMessage(R.string.example_3_dialog_delete_confirmation)
-            .setPositiveButton(R.string.delete) { _, _ ->
+            .setMessage(it.text)
+            .setNegativeButton(R.string.delete) { _, _ ->
                 deleteEvent(it)
             }
-            .setNegativeButton(R.string.close, null)
+            .setPositiveButton(R.string.close, null)
             .show()
     }
 
     private val inputDialog by lazy {
-        val editText = AppCompatEditText(requireContext())
+        val editTextTitle = AppCompatEditText(requireContext())
         val layout = FrameLayout(requireContext()).apply {
             // Setting the padding on the EditText only pads the input area
             // not the entire EditText so we wrap it in a FrameLayout.
             val padding = dpToPx(20, requireContext())
             setPadding(padding, padding, padding, padding)
-            addView(editText, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
+            addView(editTextTitle, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
         }
         AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.example_3_input_dialog_title))
             .setView(layout)
             .setPositiveButton(R.string.save) { _, _ ->
-                saveEvent(editText.text.toString())
+                saveEvent(editTextTitle.text.toString())
                 // Prepare EditText for reuse.
-                editText.setText("")
+                editTextTitle.setText("")
             }
             .setNegativeButton(R.string.close, null)
             .create()
             .apply {
                 setOnShowListener {
                     // Show the keyboard
-                    editText.requestFocus()
+                    editTextTitle.requestFocus()
                     context.inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
                 }
                 setOnDismissListener {
@@ -213,7 +213,7 @@ class CalendarFragment : BaseFragment(), HasBackButton {
                             dotView.makeInVisible()
                         }
                         selectedDate -> {
-                            textView.setTextColorRes(R.color.calendar_blue)
+                            textView.setTextColorRes(R.color.calendar_magenta)
                             textView.setBackgroundResource(R.drawable.calendar_selected_bg)
                             dotView.makeInVisible()
                         }

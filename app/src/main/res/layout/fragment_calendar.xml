@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="top"
-            android:background="@color/calendar_toolbar_color"/>
+            android:background="@color/calendar_light_pink"/>
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"

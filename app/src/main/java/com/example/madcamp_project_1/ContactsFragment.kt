@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.Manifest
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentResolver
 import android.content.Intent
@@ -16,14 +15,15 @@ import android.os.Build
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import java.util.*
 import kotlin.collections.ArrayList
+
+private val Context.inputMethodManager
+    get() = this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
 class ListViewItem : Comparable<ListViewItem> {
     lateinit var picture: String
@@ -213,11 +213,12 @@ class ContactsFragment : Fragment() {
          }
         val editTextFilter = view?.findViewById(R.id.editText) as EditText
 
+
         editTextFilter.setOnKeyListener(object: View.OnKeyListener {
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
                 if((event?.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)){
-                    val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(view?.windowToken, 0)
+                    requireContext().inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+
                     return true
                 }
                 return false

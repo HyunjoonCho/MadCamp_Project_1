@@ -4,12 +4,14 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -70,7 +72,7 @@ class Example3EventsAdapter(val onClick: (Event) -> Unit) :
 
         fun bind(event: Event) {
             val itemText = containerView.findViewById<TextView>(R.id.itemEventText)
-            itemText.text = event.text
+            itemText.text = event.text.substringBefore("\n\n")
         }
     }
 
@@ -79,8 +81,11 @@ class Example3EventsAdapter(val onClick: (Event) -> Unit) :
 class CalendarFragment : BaseFragment(), HasBackButton {
 
     private val eventsAdapter = Example3EventsAdapter {
+        val title = it.text.substringBefore("\n\n")
+        val memo = it.text.substringAfter("\n\n")
         AlertDialog.Builder(requireContext())
-            .setMessage(it.text)
+            .setTitle(title)
+            .setMessage(memo)
             .setNegativeButton(R.string.delete) { _, _ ->
                 deleteEvent(it)
             }
@@ -89,21 +94,28 @@ class CalendarFragment : BaseFragment(), HasBackButton {
     }
 
     private val inputDialog by lazy {
-        val editTextTitle = AppCompatEditText(requireContext())
-        val layout = FrameLayout(requireContext()).apply {
-            // Setting the padding on the EditText only pads the input area
-            // not the entire EditText so we wrap it in a FrameLayout.
-            val padding = dpToPx(20, requireContext())
-            setPadding(padding, padding, padding, padding)
-            addView(editTextTitle, FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
-        }
+        val dialogView = layoutInflater.inflate(R.layout.calendar_add_dialog, null)
+        val editTextTitle = dialogView.findViewById(R.id.editTitle) as EditText
+        val editTextMemo = dialogView.findViewById(R.id.editMemo) as EditText
+
+        editTextTitle.setOnKeyListener(object: View.OnKeyListener {
+            override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
+                if((event?.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)){
+                    editTextMemo.requestFocus()
+                    return true
+                }
+                return false
+            }
+        })
+
         AlertDialog.Builder(requireContext())
-            .setTitle(getString(R.string.example_3_input_dialog_title))
-            .setView(layout)
+            .setView(dialogView)
             .setPositiveButton(R.string.save) { _, _ ->
-                saveEvent(editTextTitle.text.toString())
+                saveEvent((editTextTitle.text.toString().plus("\n\n").plus(editTextMemo.text.toString())))
+
                 // Prepare EditText for reuse.
                 editTextTitle.setText("")
+                editTextMemo.setText("")
             }
             .setNegativeButton(R.string.close, null)
             .create()
@@ -143,7 +155,6 @@ class CalendarFragment : BaseFragment(), HasBackButton {
         editor = pref.edit()
         val json: String? = pref.getString("events", "")
         if (!json!!.contentEquals("")) {
-            Log.i("json", json)
             val resobj = JSONObject(json)
             var keys = resobj.keys()
 
@@ -290,6 +301,8 @@ class CalendarFragment : BaseFragment(), HasBackButton {
     private fun deleteEvent(event: Event) {
         val date = event.date
         events[date] = events[date].orEmpty().minus(event)
+        editor.putString("events", Gson().toJson(events))
+        editor.commit()
         updateAdapterForDate(date)
     }
 

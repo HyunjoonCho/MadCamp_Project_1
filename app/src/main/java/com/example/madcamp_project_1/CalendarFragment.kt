@@ -51,6 +51,7 @@ class Example3EventsAdapter(val onClick: (Event) -> Unit) :
     RecyclerView.Adapter<Example3EventsAdapter.Example3EventsViewHolder>() {
 
     val events = mutableListOf<Event>()
+    var longClickListener : OnLongClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Example3EventsViewHolder {
         return Example3EventsViewHolder(parent.inflate(R.layout.event_item_view))
@@ -69,12 +70,30 @@ class Example3EventsAdapter(val onClick: (Event) -> Unit) :
             itemView.setOnClickListener {
                 onClick(events[adapterPosition])
             }
+            itemView.setOnLongClickListener(object : View.OnLongClickListener {
+                override fun onLongClick(v: View?): Boolean {
+                    if (longClickListener != null) {
+                        longClickListener?.onLongClick(events[adapterPosition])
+                        return true
+                    }
+                    return false
+                }
+
+            })
         }
 
         fun bind(event: Event) {
             val itemText = containerView.findViewById<TextView>(R.id.itemEventText)
             itemText.text = event.text.substringBefore("\n\n")
         }
+    }
+
+    interface OnLongClickListener {
+        fun onLongClick(event: Event)
+    }
+
+    fun setOnLongClickListener(listener: OnLongClickListener) {
+        longClickListener = listener
     }
 
 }
@@ -145,6 +164,20 @@ class CalendarFragment : BaseFragment(), HasBackButton {
         super.onViewCreated(view, savedInstanceState)
 
         exThreeRv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        eventsAdapter.setOnLongClickListener(object : Example3EventsAdapter.OnLongClickListener {
+            override fun onLongClick(event: Event) {
+                val builder = AlertDialog.Builder(requireContext())
+
+                builder
+                    .setMessage("Are you sure you want to delete this event?")
+                    .setNegativeButton("No", null)
+                    .setPositiveButton("Delete") {_, _ ->
+                        deleteEvent(event)
+                    }
+                builder.show()
+
+            }
+        })
         exThreeRv.adapter = eventsAdapter
         exThreeRv.addItemDecoration(DividerItemDecoration(requireContext(), RecyclerView.VERTICAL))
 

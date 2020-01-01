@@ -32,6 +32,7 @@ import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kizitonwose.calendarviewsample.*
 import com.kizitonwose.calendarviewsample.inflate
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.calendar_click_dialog.view.*
 import kotlinx.android.synthetic.main.calendar_day_legend.view.*
 import kotlinx.android.synthetic.main.calendar_day.view.*
 import kotlinx.android.synthetic.main.fragment_calendar.*
@@ -83,9 +84,13 @@ class CalendarFragment : BaseFragment(), HasBackButton {
     private val eventsAdapter = Example3EventsAdapter {
         val title = it.text.substringBefore("\n\n")
         val memo = it.text.substringAfter("\n\n")
+
+        val dialogView = layoutInflater.inflate(R.layout.calendar_click_dialog, null)
+        dialogView.titleEvent.text = title
+        dialogView.memoEvent.text = memo
+
         AlertDialog.Builder(requireContext())
-            .setTitle(title)
-            .setMessage(memo)
+            .setView(dialogView)
             .setNegativeButton(R.string.delete) { _, _ ->
                 deleteEvent(it)
             }

@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tabMode="fixed" />
 
-    <androidx.viewpager.widget.ViewPager
+    <com.example.madcamp_project_1.CumstomViewPager
         android:id="@+id/viewpager_main"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

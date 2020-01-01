@@ -15,6 +15,7 @@
             android:id="@+id/titleEvent"
             android:textSize="22dp"
             android:textStyle="bold"
+            android:textColor="@color/calendar_black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>

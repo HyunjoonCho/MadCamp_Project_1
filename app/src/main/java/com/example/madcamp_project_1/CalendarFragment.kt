@@ -86,16 +86,16 @@ class CalendarFragment : BaseFragment(), HasBackButton {
         val memo = it.text.substringAfter("\n\n")
 
         val dialogView = layoutInflater.inflate(R.layout.calendar_click_dialog, null)
+        val closeBtn = dialogView.close_event
         dialogView.titleEvent.text = title
         dialogView.memoEvent.text = memo
+        val memoDialog= AlertDialog.Builder(requireContext()).setView(dialogView).create()
 
-        AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .setNegativeButton(R.string.delete) { _, _ ->
-                deleteEvent(it)
-            }
-            .setPositiveButton(R.string.close, null)
-            .show()
+        closeBtn.setOnClickListener {
+            memoDialog.dismiss()
+        }
+
+        memoDialog.show()
     }
 
 

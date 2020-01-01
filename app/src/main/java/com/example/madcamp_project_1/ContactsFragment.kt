@@ -217,13 +217,22 @@ class ContactsFragment : Fragment() {
         editTextFilter.setOnKeyListener(object: View.OnKeyListener {
             override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
                 if((event?.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)){
-                    requireContext().inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+                    requireContext().inputMethodManager.hideSoftInputFromWindow(editTextFilter.windowToken, 0)
 
                     return true
                 }
                 return false
             }
         })
+
+        editTextFilter.onFocusChangeListener = object : View.OnFocusChangeListener {
+            override fun onFocusChange(v: View?, hasFocus: Boolean) {
+                if (!hasFocus) {
+                    requireContext().inputMethodManager.hideSoftInputFromWindow(editTextFilter.windowToken, 0)
+                }
+            }
+        }
+
 
         editTextFilter.addTextChangedListener(object: TextWatcher{
             override fun afterTextChanged(s: Editable?) {

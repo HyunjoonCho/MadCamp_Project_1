@@ -98,6 +98,7 @@ class CalendarFragment : BaseFragment(), HasBackButton {
             .show()
     }
 
+
     override val titleRes: Int = R.string.example_3_title
 
     private var selectedDate: LocalDate? = null
@@ -129,7 +130,7 @@ class CalendarFragment : BaseFragment(), HasBackButton {
                 val d = LocalDate.parse(key)
                 var arr = resobj.getJSONArray(key)
 
-                for (i in 0..arr.length()-1) {
+                for (i in 0 until arr.length()) {
                     var elm = arr.getJSONObject(i)
                     events[d] = events[d].orEmpty().plus(Event(UUID.randomUUID().toString(), elm.getString("text"), d))
                 }
@@ -247,6 +248,9 @@ class CalendarFragment : BaseFragment(), HasBackButton {
                 override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
                     if ((event?.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                         editTextMemo.requestFocus()
+                        editTextMemo.postDelayed(Runnable {
+                            requireContext().inputMethodManager.showSoftInput(editTextMemo, 0)
+                        }, 30)
                         return true
                     }
                     return false
@@ -260,17 +264,14 @@ class CalendarFragment : BaseFragment(), HasBackButton {
                     setOnShowListener {
                         // Show the keyboard
                         editTextTitle.requestFocus()
-                        context.inputMethodManager.toggleSoftInput(
-                            InputMethodManager.SHOW_FORCED,
-                            0
-                        )
+                        editTextTitle.postDelayed(Runnable {
+                            context.inputMethodManager.showSoftInput(editTextTitle, 0)
+                        }, 30)
                     }
                     setOnDismissListener {
                         // Hide the keyboard
-                        context.inputMethodManager.toggleSoftInput(
-                            InputMethodManager.HIDE_IMPLICIT_ONLY,
-                            0
-                        )
+                        context.inputMethodManager.hideSoftInputFromWindow(editTextMemo.windowToken, 0)
+                        context.inputMethodManager.hideSoftInputFromWindow(editTextTitle.windowToken, 0)
                     }
                 }
             saveBtn.setOnClickListener {

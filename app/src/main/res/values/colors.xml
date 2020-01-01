@@ -6,10 +6,12 @@
     <color name="calendar_black">#D9000000</color>
     <color name="calendar_white">#D9FFFFFF</color>
     <color name="calendar_blue_light">#D2E3FC</color>
+    <color name="calendar_blue">#174DF3</color>
     <color name="calendar_magenta">#FB0887</color>
     <color name="calendar_magenta_light">#FED2E9</color>
     <color name="calendar_light_pink">#F3A1CC</color>
     <color name="calendar_toolbar_color_dark">#455A64</color>
     <color name="white">#fff</color>
+    <color name="grey">#BABABA</color>
     <color name="black">#000</color>
 </resources>

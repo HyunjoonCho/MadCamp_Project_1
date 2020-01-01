@@ -3,20 +3,18 @@ package com.example.madcamp_project_1
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
-import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -32,6 +30,8 @@ import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kizitonwose.calendarviewsample.*
 import com.kizitonwose.calendarviewsample.inflate
 import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.calendar_add_dialog.*
+import kotlinx.android.synthetic.main.calendar_add_dialog.view.*
 import kotlinx.android.synthetic.main.calendar_click_dialog.view.*
 import kotlinx.android.synthetic.main.calendar_day_legend.view.*
 import kotlinx.android.synthetic.main.calendar_day.view.*
@@ -96,45 +96,6 @@ class CalendarFragment : BaseFragment(), HasBackButton {
             }
             .setPositiveButton(R.string.close, null)
             .show()
-    }
-
-    private val inputDialog by lazy {
-        val dialogView = layoutInflater.inflate(R.layout.calendar_add_dialog, null)
-        val editTextTitle = dialogView.findViewById(R.id.editTitle) as EditText
-        val editTextMemo = dialogView.findViewById(R.id.editMemo) as EditText
-
-        editTextTitle.setOnKeyListener(object: View.OnKeyListener {
-            override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
-                if((event?.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)){
-                    editTextMemo.requestFocus()
-                    return true
-                }
-                return false
-            }
-        })
-
-        AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .setPositiveButton(R.string.save) { _, _ ->
-                saveEvent((editTextTitle.text.toString().plus("\n\n").plus(editTextMemo.text.toString())))
-
-                // Prepare EditText for reuse.
-                editTextTitle.setText("")
-                editTextMemo.setText("")
-            }
-            .setNegativeButton(R.string.close, null)
-            .create()
-            .apply {
-                setOnShowListener {
-                    // Show the keyboard
-                    editTextTitle.requestFocus()
-                    context.inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
-                }
-                setOnDismissListener {
-                    // Hide the keyboard
-                    context.inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
-                }
-            }
     }
 
     override val titleRes: Int = R.string.example_3_title
@@ -276,6 +237,66 @@ class CalendarFragment : BaseFragment(), HasBackButton {
         }
 
         exThreeAddButton.setOnClickListener {
+            val dialogView = layoutInflater.inflate(R.layout.calendar_add_dialog, null)
+            val editTextTitle = dialogView.editTitle
+            val editTextMemo = dialogView.editMemo
+            val closeBtn = dialogView.close_dialog
+            val saveBtn = dialogView.save_event
+
+            editTextTitle.setOnKeyListener(object : View.OnKeyListener {
+                override fun onKey(v: View?, keyCode: Int, event: KeyEvent?): Boolean {
+                    if ((event?.action == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                        editTextMemo.requestFocus()
+                        return true
+                    }
+                    return false
+                }
+            })
+
+            val inputDialog = AlertDialog.Builder(requireContext())
+                .setView(dialogView)
+                .create()
+                .apply {
+                    setOnShowListener {
+                        // Show the keyboard
+                        editTextTitle.requestFocus()
+                        context.inputMethodManager.toggleSoftInput(
+                            InputMethodManager.SHOW_FORCED,
+                            0
+                        )
+                    }
+                    setOnDismissListener {
+                        // Hide the keyboard
+                        context.inputMethodManager.toggleSoftInput(
+                            InputMethodManager.HIDE_IMPLICIT_ONLY,
+                            0
+                        )
+                    }
+                }
+            saveBtn.setOnClickListener {
+                saveEvent((editTextTitle.text.toString().plus("\n\n").plus(editTextMemo.text.toString())))
+
+                // Prepare EditText for reuse.
+                editTextTitle.setText("")
+                editTextMemo.setText("")
+                inputDialog.dismiss()
+            }
+            closeBtn.setOnClickListener {
+                inputDialog.dismiss()
+            }
+            saveBtn.setTextColor((resources.getColorStateList(R.color.selector_button)))
+            saveBtn.isEnabled = false
+
+            editTextTitle.addTextChangedListener(object: TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    saveBtn.isEnabled = s.toString().trim().isNotEmpty()
+                }
+            })
+
             inputDialog.show()
         }
     }
